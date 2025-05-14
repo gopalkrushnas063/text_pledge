@@ -93,13 +93,13 @@ class _ParentPermissionPageState extends State<ParentPermissionPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF3F51B5),
         title: const Text(
-          'PARENT PERMISSION',
+          'Parent Permission',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        centerTitle: true,
+        centerTitle: false,
         leading: InkWell(
           onTap: () => Navigator.pop(context),
-          child: const Icon(Icons.arrow_back, color: Colors.white),
+          child: const Icon(Icons.arrow_back_ios, color: Colors.white),
         ),
         actions: const [
           Padding(

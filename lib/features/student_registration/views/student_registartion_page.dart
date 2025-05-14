@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:signature/signature.dart';
+import '../controllers/form_submission_notifier.dart';
+import '../models/student_form_model.dart';
 
-class StudentRegistrationPage extends StatefulWidget {
+class StudentRegistrationPage extends ConsumerStatefulWidget {
   const StudentRegistrationPage({super.key});
 
   @override
-  State<StudentRegistrationPage> createState() =>
+  ConsumerState<StudentRegistrationPage> createState() =>
       _StudentRegistrationPageState();
 }
 
-class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
+class _StudentRegistrationPageState
+    extends ConsumerState<StudentRegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _controllers = {
     'name': TextEditingController(),
-    'school name': TextEditingController(),
+    'school_name': TextEditingController(),
     'address': TextEditingController(),
     'city': TextEditingController(),
     'zip': TextEditingController(),
-    'parent name': TextEditingController(),
-    'student name': TextEditingController(),
+    'parent_name': TextEditingController(),
+    'student_name': TextEditingController(),
   };
 
   bool _isChecked = false;
@@ -28,11 +32,45 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
     penColor: Colors.black,
   );
 
-  void _submitForm() {
+  @override
+  void dispose() {
+    for (var controller in _controllers.values) {
+      controller.dispose();
+    }
+    _signatureController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate() &&
         _isChecked &&
         !_signatureController.isEmpty) {
-      Fluttertoast.showToast(msg: "Form submitted successfully");
+      final signatureImage = await _signatureController.toPngBytes();
+      if (signatureImage == null) {
+        Fluttertoast.showToast(msg: "Failed to process signature");
+        return;
+      }
+
+      final formData = StudentFormModel(
+        name: _controllers['name']!.text,
+        schoolName: _controllers['school_name']!.text,
+        address: _controllers['address']!.text,
+        city: _controllers['city']!.text,
+        zip: _controllers['zip']!.text,
+        parentName: _controllers['parent_name']!.text,
+        studentName: _controllers['student_name']!.text,
+        signature: signatureImage.toString(),
+      );
+
+      await ref.read(formSubmissionProvider.notifier).submitForm(formData);
+
+      final state = ref.read(formSubmissionProvider);
+      if (state.isSuccess) {
+        Fluttertoast.showToast(msg: "Form submitted successfully");
+        _resetForm();
+      } else if (state.error != null) {
+        Fluttertoast.showToast(msg: "Error: ${state.error}");
+      }
     } else {
       if (!_isChecked) {
         Fluttertoast.showToast(msg: "Please accept the pledges");
@@ -42,6 +80,15 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
       }
       Fluttertoast.showToast(msg: "Please fill all required fields");
     }
+  }
+
+  void _resetForm() {
+    _formKey.currentState?.reset();
+    for (var controller in _controllers.values) {
+      controller.clear();
+    }
+    _signatureController.clear();
+    setState(() => _isChecked = false);
   }
 
   void _openSignaturePad() {
@@ -74,6 +121,8 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(formSubmissionProvider);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF3F51B5),
@@ -97,18 +146,21 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
           width: double.infinity,
           height: 50,
           child: ElevatedButton(
+            onPressed: state.isLoading ? null : _submitForm,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF3F51B5),
             ),
-            onPressed: _submitForm,
-            child: const Text(
-              'CREATE',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            child:
+                state.isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                      'CREATE',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
           ),
         ),
       ),
@@ -126,7 +178,7 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        field.key.toUpperCase(),
+                        field.key.replaceAll('_', ' ').toUpperCase(),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -136,13 +188,13 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                       TextFormField(
                         controller: field.value,
                         decoration: InputDecoration(
-                          hintText: field.key,
+                          hintText: field.key.replaceAll('_', ' '),
                           hintStyle: const TextStyle(color: Colors.grey),
                           border: const UnderlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Please enter ${field.key}';
+                            return 'Please enter ${field.key.replaceAll('_', ' ')}';
                           }
                           return null;
                         },
@@ -208,6 +260,24 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                   ],
                 ),
               ),
+              if (!_signatureController.isEmpty) ...[
+                const SizedBox(height: 16),
+                const Text(
+                  'Signature Preview:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: Signature(
+                    controller: _signatureController,
+                    height: 100,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ],
               const SizedBox(height: 80),
             ],
           ),

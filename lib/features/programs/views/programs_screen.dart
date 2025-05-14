@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:text_pledge/pdf_viewer_screen.dart';
+import 'package:text_pledge/features/Programs/widgets/pdf_viewer_screen.dart';
 
 class ProgramsScreen extends StatelessWidget {
   @override
