@@ -1,36 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:text_pledge/parent_permission_screen.dart';
+import 'package:text_pledge/programs_screen.dart';
+import 'package:text_pledge/splash_screen.dart';
+import 'package:text_pledge/student_registartion_page.dart';
+import 'package:text_pledge/text_pledges_screen.dart';
 
-void main() => runApp(TextPledgeApp());
+void main() {
+  runApp(const MyApp());
+}
 
-class TextPledgeApp extends StatelessWidget {
-  const TextPledgeApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TextPledgeHome(),
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Color(0xFF536DFE),
+            statusBarIconBrightness: Brightness.light,
+          ),
+        ),
+      ),
+      home: const SplashScreen(),
     );
   }
 }
 
 class TextPledgeHome extends StatelessWidget {
-  final Color primaryColor = Color(0xFF536DFE);
-  final Color greenColor = Color(0xFF388E3C);
+  final Color primaryColor = const Color(0xFF536DFE);
+  final Color greenColor = const Color(0xFF388E3C);
 
-  TextPledgeHome({super.key});
+  const TextPledgeHome({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: primaryColor,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
           children: [
             // Top Header
             Container(
               color: primaryColor,
-              padding: const EdgeInsets.symmetric(vertical: 20),
+              padding: const EdgeInsets.only(
+                top: 70, // Extra padding instead of SafeArea
+                bottom: 20,
+                left: 16,
+                right: 16,
+              ),
               width: double.infinity,
               child: Column(
                 children: [
@@ -45,6 +72,7 @@ class TextPledgeHome extends StatelessWidget {
               ),
             ),
 
+            // Rest of your existing body content...
             // Buttons Section
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -52,17 +80,68 @@ class TextPledgeHome extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Expanded(child: buildButton('Student Signup')),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => StudentRegistrationPage(),
+                              ),
+                            );
+                          },
+                          child: buildButton('Student Signup'),
+                        ),
+                      ),
                       const SizedBox(width: 12),
-                      Expanded(child: buildButton('Text Pledges')),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            //TextPledgesScreen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TextPledgesScreen(),
+                              ),
+                            );
+                          },
+                          child: buildButton('Text Pledges'),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Expanded(child: buildButton('Parent Permission')),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            //ParentPermissionPage
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ParentPermissionPage(),
+                              ),
+                            );
+                          },
+                          child: buildButton('Parent Permission'),
+                        ),
+                      ),
                       const SizedBox(width: 12),
-                      Expanded(child: buildButton('Programs')),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            //ProgramsScreen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProgramsScreen(),
+                              ),
+                            );
+                          },
+                          child: buildButton('Programs'),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 20),
