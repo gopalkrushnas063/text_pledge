@@ -11,11 +11,21 @@ class FormSubmissionNotifier extends StateNotifier<FormSubmissionState> {
   FormSubmissionNotifier() : super(FormSubmissionState());
 
   Future<void> submitForm(StudentFormModel formData) async {
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true, error: null, fileUrl: null);
     
     try {
-      await GoogleSheetsService.submitForm(formData);
-      state = state.copyWith(isLoading: false, isSuccess: true);
+      final response = await GoogleSheetsService.submitForm(formData);
+      
+      // If the response contains a file URL, store it
+      if (response != null && response.containsKey('fileUrl')) {
+        state = state.copyWith(
+          isLoading: false, 
+          isSuccess: true,
+          fileUrl: response['fileUrl']
+        );
+      } else {
+        state = state.copyWith(isLoading: false, isSuccess: true);
+      }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }

@@ -1,4 +1,6 @@
-// lib/features/student_registration/models/student_form_model.dart
+import 'dart:convert';
+import 'dart:typed_data';
+
 class StudentFormModel {
   final String name;
   final String schoolName;
@@ -7,7 +9,7 @@ class StudentFormModel {
   final String zip;
   final String parentName;
   final String studentName;
-  final String signature; // This will store the Base64 string
+  final String signature; // Base64 encoded signature
 
   StudentFormModel({
     required this.name,
@@ -20,6 +22,11 @@ class StudentFormModel {
     required this.signature,
   });
 
+  // Convert Uint8List to base64 string
+  static String bytesToBase64(Uint8List bytes) {
+    return base64Encode(bytes);
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -29,7 +36,7 @@ class StudentFormModel {
       'zip': zip,
       'parent_name': parentName,
       'student_name': studentName,
-      'signature': signature, // Send the Base64 string
+      'signature_base64': signature, // Include signature in JSON
     };
   }
 }
