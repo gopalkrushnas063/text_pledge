@@ -1,15 +1,19 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:signature/signature.dart';
+import '../controllers/form_submission_notifier.dart';
+import '../models/parent_form_model.dart';
 
-class ParentPermissionPage extends StatefulWidget {
+class ParentPermissionPage extends ConsumerStatefulWidget {
   const ParentPermissionPage({super.key});
 
   @override
-  State<ParentPermissionPage> createState() => _ParentPermissionPageState();
+  ConsumerState<ParentPermissionPage> createState() =>
+      _ParentPermissionPageState();
 }
 
-class _ParentPermissionPageState extends State<ParentPermissionPage> {
+class _ParentPermissionPageState extends ConsumerState<ParentPermissionPage> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _controllers = {
     'name': TextEditingController(),
@@ -25,54 +29,110 @@ class _ParentPermissionPageState extends State<ParentPermissionPage> {
     'grade level': TextEditingController(),
   };
 
-  final SignatureController _signatureController = SignatureController(
-    penStrokeWidth: 3,
-    penColor: Colors.black,
-  );
   List<bool> _checkboxes = [false, false, false, false];
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate() &&
-        !_signatureController.isEmpty &&
-        _checkboxes.every((e) => e)) {
-      Fluttertoast.showToast(msg: "Form submitted successfully");
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate() && _checkboxes.every((e) => e)) {
+      _showLoadingDialog();
+
+      try {
+        final formData = ParentFormModel(
+          name: _controllers['name']!.text,
+          email: _controllers['email']!.text,
+          phoneNumber: _controllers['phone number']!.text,
+          address: _controllers['address']!.text,
+          city: _controllers['city']!.text,
+          zip: _controllers['zip']!.text,
+          studentName: _controllers['student name']!.text,
+          studentAge: _controllers['student age']!.text,
+          referringSchool: _controllers['referring school']!.text,
+          churchOrGroup: _controllers['church or group']!.text,
+          gradeLevel: _controllers['grade level']!.text,
+          permissions: _checkboxes,
+        );
+
+        await ref
+            .read(parentFormSubmissionProvider.notifier)
+            .submitForm(formData);
+
+        if (mounted) Navigator.pop(context);
+
+        final state = ref.read(parentFormSubmissionProvider);
+        if (state.isSuccess) {
+          Fluttertoast.showToast(msg: "Form submitted successfully");
+
+          if (state.fileUrl != null && state.fileUrl!.isNotEmpty) {
+            _showSuccessDialog(state.fileUrl!);
+          }
+
+          _resetForm();
+          Navigator.pop(context);
+        } else if (state.error != null) {
+          Fluttertoast.showToast(msg: "Error: ${state.error}");
+        }
+      } catch (e) {
+        if (mounted) Navigator.pop(context);
+        Fluttertoast.showToast(msg: "Error: $e");
+      }
     } else {
+      String errorMessage = "Please fill all required fields";
       if (!_checkboxes.every((e) => e)) {
-        Fluttertoast.showToast(msg: "Please accept all required permissions");
+        errorMessage = "Please accept all required permissions";
       }
-      if (_signatureController.isEmpty) {
-        Fluttertoast.showToast(msg: "Please provide your signature");
-      }
-      Fluttertoast.showToast(msg: "Please fill all required fields");
+      Fluttertoast.showToast(msg: errorMessage);
     }
   }
 
-  void _openSignaturePad() {
+  void _showSuccessDialog(String fileUrl) {
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text("Signature Pad"),
-            content: SizedBox(
-              height: 200,
-              width: double.maxFinite,
-              child: Signature(
-                controller: _signatureController,
-                backgroundColor: Colors.grey[200]!,
-              ),
+            title: const Text("Form Submitted Successfully"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text("Your form has been submitted successfully."),
+              ],
             ),
             actions: [
               TextButton(
-                onPressed: () => _signatureController.clear(),
-                child: const Text("Clear"),
-              ),
-              TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Done"),
+                child: const Text("OK"),
               ),
             ],
           ),
     );
+  }
+
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text("Submitting form..."),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _resetForm() {
+    _formKey.currentState?.reset();
+    for (var controller in _controllers.values) {
+      controller.clear();
+    }
+    setState(() => _checkboxes = [false, false, false, false]);
   }
 
   Widget _buildCheckbox(int index, String title) {
@@ -89,6 +149,8 @@ class _ParentPermissionPageState extends State<ParentPermissionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(parentFormSubmissionProvider);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF3F51B5),
@@ -120,15 +182,18 @@ class _ParentPermissionPageState extends State<ParentPermissionPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF3F51B5),
             ),
-            onPressed: _submitForm,
-            child: const Text(
-              'CREATE',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            onPressed: state.isLoading ? null : _submitForm,
+            child:
+                state.isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                      'CREATE',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
           ),
         ),
       ),
@@ -202,24 +267,7 @@ class _ParentPermissionPageState extends State<ParentPermissionPage> {
                 3,
                 "I have reviewed the information TextPledge shares.",
               ),
-              const SizedBox(height: 8),
-              GestureDetector(
-                onTap: _openSignaturePad,
-                child: Row(
-                  children: const [
-                    Icon(Icons.edit, color: Color(0xFF3F51B5)),
-                    SizedBox(width: 8),
-                    Text(
-                      'Draw Your Signature',
-                      style: TextStyle(
-                        color: Color(0xFF3F51B5),
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
               const SizedBox(height: 80),
             ],
           ),

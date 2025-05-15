@@ -18,15 +18,51 @@ class _TextPledgesScreenState extends State<TextPledgesScreen> {
       "description":
           "I pledge to avoid having distractions in the motor vehicle when I am in it, and to know the warning signs of distracted driving.",
     },
-    {"title": "Discrimination", "description": ""},
-    {"title": "Acts of Violence", "description": ""},
-    {"title": "Prevent Bullying and Cyberbullying", "description": ""},
-    {"title": "Raise Mental Health", "description": ""},
-    {"title": "Stop Domestic Violence and Assault", "description": ""},
-    {"title": "End Driving Under the Influence", "description": ""},
-    {"title": "Stop Human Trafficking", "description": ""},
-    {"title": "Protect Animal Rights", "description": ""},
-    {"title": "Protecting the Environment", "description": ""},
+    {
+      "title": "Discrimination",
+      "description":
+          "I pledge to know and learn about what discrimination is so that everyone feels safe and welcome in our communities.",
+    },
+    {
+      "title": "Acts of Violence",
+      "description":
+          "I pledge to know and learn the signs that may lead to acts of violence with guns and weapons. I pledge to help Text Pledge reduce the number of injuries, homicides and suicides caused these objects.",
+    },
+    {
+      "title": "Prevent Bullying and Cyberbullying",
+      "description":
+          "I pledge to report Bullying or Cyberbullying i may witness, to a trusted adult parent or teacher.",
+    },
+    {
+      "title": "Raise Mental Health",
+      "description":
+          "I pledge to raise mental health awareness in my community or school and watch for warning signs or situations where someone may need assistance with mental illness.",
+    },
+    {
+      "title": "Stop Domestic Violence and Assault",
+      "description":
+          "I pledge to watch for the signs of Domestic abuse or assault and to learn the signs and guide others for assistance that may be in need of it.",
+    },
+    {
+      "title": "End Driving Under the Influence",
+      "description":
+          "I pledge to do my part in ending driving under the influence.Medications, Alcohol and other substances should not be used when driving a motor vehicle, I pledge to watch for the signs.",
+    },
+    {
+      "title": "Stop Human Trafficking",
+      "description":
+          "I pledge to learn the signs of human trafficking and direct those that may need assistance to the right support.",
+    },
+    {
+      "title": "Protect Animal Rights",
+      "description":
+          "I pledge to protect animals from abuse or cruelty and to do my part in protecting innocent animals.",
+    },
+    {
+      "title": "Protecting the Environment",
+      "description":
+          "I pledge to do my part in protecting the environment and learn what I can do to make our world a better place.",
+    },
   ];
 
   @override
