@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:quickalert/quickalert.dart'; // Added QuickAlert import
 import '../controllers/form_submission_notifier.dart';
 import '../models/parent_form_model.dart';
 
@@ -59,71 +59,78 @@ class _ParentPermissionPageState extends ConsumerState<ParentPermissionPage> {
 
         final state = ref.read(parentFormSubmissionProvider);
         if (state.isSuccess) {
-          Fluttertoast.showToast(msg: "Form submitted successfully");
+          // Replaced toast with QuickAlert
+          await QuickAlert.show(
+            context: context,
+            type: QuickAlertType.success,
+            title: 'Success',
+            text: 'Form submitted successfully',
+            onConfirmBtnTap: () {
+              Navigator.pop(context); // Close the alert
+              Navigator.pop(context); // Go back to home screen
+            },
+          );
 
           if (state.fileUrl != null && state.fileUrl!.isNotEmpty) {
             _showSuccessDialog(state.fileUrl!);
           }
 
           _resetForm();
-          Navigator.pop(context);
         } else if (state.error != null) {
-          Fluttertoast.showToast(msg: "Error: ${state.error}");
+          // Replaced toast with QuickAlert
+          await QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: 'Error',
+            text: state.error,
+          );
         }
       } catch (e) {
         if (mounted) Navigator.pop(context);
-        Fluttertoast.showToast(msg: "Error: $e");
+        // Replaced toast with QuickAlert
+        await QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: 'Error',
+          text: e.toString(),
+        );
       }
     } else {
       String errorMessage = "Please fill all required fields";
       if (!_checkboxes.every((e) => e)) {
         errorMessage = "Please accept all required permissions";
       }
-      Fluttertoast.showToast(msg: errorMessage);
+      // Replaced toast with QuickAlert
+      await QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        title: 'Validation Error',
+        text: errorMessage,
+      );
     }
   }
 
   void _showSuccessDialog(String fileUrl) {
-    showDialog(
+    QuickAlert.show(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text("Form Submitted Successfully"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text("Your form has been submitted successfully."),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK"),
-              ),
-            ],
-          ),
+      type: QuickAlertType.success,
+      title: 'Form Submitted Successfully',
+      text: 'Your form has been submitted successfully.',
+      confirmBtnText: 'OK',
+      onConfirmBtnTap: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
     );
   }
 
   void _showLoadingDialog() {
-    showDialog(
+    QuickAlert.show(
       context: context,
+      type: QuickAlertType.loading,
+      title: 'Loading',
+      text: 'Submitting form...',
       barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text("Submitting form..."),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 
