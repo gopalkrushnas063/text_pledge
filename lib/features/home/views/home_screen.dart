@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:text_pledge/features/Programs/views/programs_screen.dart';
+import 'package:text_pledge/features/crisis_hotlines/views/crisis_hotlines_screen.dart';
 import 'package:text_pledge/features/parent_permissions/views/parent_permission_screen.dart';
 import 'package:text_pledge/features/student_registration/views/student_registartion_page.dart';
 import 'package:text_pledge/features/text_pledges/views/text_pledges_screen.dart';
@@ -120,30 +121,41 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    decoration: BoxDecoration(
-                      color: greenColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Crisis Hotlines United States',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: () {
+                      //CrisisHotlinesApp
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CrisisHotlinesApp(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      decoration: BoxDecoration(
+                        color: greenColor,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Crisis Hotlines United States',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 8),
-                        Image(
-                          image: AssetImage('assets/images/us_flag.png'),
-                          height: 20,
-                        ),
-                      ],
+                          SizedBox(width: 8),
+                          Image(
+                            image: AssetImage('assets/images/us_flag.png'),
+                            height: 20,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

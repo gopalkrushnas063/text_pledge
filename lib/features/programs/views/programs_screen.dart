@@ -19,7 +19,7 @@ class ProgramsScreen extends StatelessWidget {
                 right: 16,
                 bottom: 12,
               ),
-              color: Color(0xFF4A4ED4), // Blue
+              color: Color(0xFF536DFE), // Blue
               child: Row(
                 children: [
                   InkWell(
@@ -63,7 +63,7 @@ class ProgramsScreen extends StatelessWidget {
                     TextSpan(
                       text: 'Text Pledge',
                       style: TextStyle(
-                        color: Color(0xFF4A4ED4),
+                        color: Color(0xFF536DFE),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -71,7 +71,7 @@ class ProgramsScreen extends StatelessWidget {
                     TextSpan(
                       text: '"sensitive"',
                       style: TextStyle(
-                        color: Color(0xFF4A4ED4),
+                        color: Color(0xFF536DFE),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -86,7 +86,7 @@ class ProgramsScreen extends StatelessWidget {
 
             // Tabs
             TabBar(
-              labelColor: Color(0xFF4A4ED4),
+              labelColor: Color(0xFF536DFE),
               unselectedLabelColor: Colors.grey,
               labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
               tabs: [
@@ -110,12 +110,30 @@ class ProgramsScreen extends StatelessWidget {
 
 class ElementaryTab extends StatelessWidget {
   final List<Map<String, dynamic>> items = [
-    {'title': 'STOP DISTRACTED DRIVING', 'activityLink': 'ActivityBook.pdf'},
-    {'title': 'END DISCRIMINATION'},
-    {'title': 'END ACTS OF VIOLENCE'},
-    {'title': 'RAISE MENTAL HEALTH'},
-    {'title': 'PROTECT ANIMAL RIGHTS'},
-    {'title': 'PROTECT THE ENVIRONMENT'},
+    {
+      'title': 'STOP DISTRACTED DRIVING',
+      'activityLink': 'assets/pdf/K1/Copy-of-Activity_DD_K1.pdf',
+    },
+    {
+      'title': 'END DISCRIMINATION',
+      'activityLink': 'assets/pdf/K1/Copy-of-Activity_Discrimination_K1.pdf',
+    },
+    {
+      'title': 'END ACTS OF VIOLENCE',
+      'activityLink': 'assets/pdf/K1/Copy-of-Activity_Discrimination_G2-G4.pdf',
+    },
+    {
+      'title': 'RAISE MENTAL HEALTH',
+      'activityLink': 'assets/pdf/K1/Copy-of-Activity_Mental_K1.pdf',
+    },
+    {
+      'title': 'PROTECT ANIMAL RIGHTS',
+      'activityLink': 'assets/pdf/K1/Copy-of-Activity_Animals_K1',
+    },
+    {
+      'title': 'PROTECT THE ENVIRONMENT',
+      'activityLink': 'assets/pdf/K1/Copy-of-Activity_Environment_K1.pdf',
+    },
   ];
 
   @override
@@ -161,16 +179,15 @@ class ElementaryTab extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder:
-                                          (context) => PdfViewScreen(
-                                            isFromUrl: true,
-                                            path:
-                                                'https://docs.google.com/file/d/1dsGGyuqvFAX87zpLtR7u38zxZCib2ArU/edit?singconverswall=malptolida',
+                                          (context) => FullScreenPdfViewer(
+                                            pdfPath: item['activityLink'],
+                                            isAsset: true,
                                           ),
                                     ),
                                   );
                                 },
                                 child: Text(
-                                  item['activityLink'],
+                                  'View PDF',
                                   style: GoogleFonts.poppins(
                                     color: Colors.blue,
                                     decoration: TextDecoration.underline,

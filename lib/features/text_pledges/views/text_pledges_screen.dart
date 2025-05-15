@@ -82,7 +82,7 @@ class _TextPledgesScreenState extends State<TextPledgesScreen> {
             // Header with Back Button
             Container(
               width: double.infinity,
-              color: Color(0xFF3B4CCA),
+              color: Color(0xFF536DFE),
               padding: const EdgeInsets.only(
                 top: 70,
                 bottom: 20,
@@ -164,7 +164,7 @@ class _TextPledgesScreenState extends State<TextPledgesScreen> {
                                     height: 30,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: Color(0xFF3B4CCA),
+                                      color: Color(0xFF536DFE),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(

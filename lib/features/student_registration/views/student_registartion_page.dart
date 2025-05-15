@@ -226,7 +226,7 @@ class _StudentRegistrationPageState
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3F51B5),
+        backgroundColor: const Color(0xFF536DFE),
         title: const Text(
           'STUDENT REGISTRATION',
           style: TextStyle(
@@ -249,7 +249,7 @@ class _StudentRegistrationPageState
           child: ElevatedButton(
             onPressed: state.isLoading ? null : _submitForm,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3F51B5),
+              backgroundColor: const Color(0xFF536DFE),
             ),
             child:
                 state.isLoading
@@ -355,12 +355,12 @@ class _StudentRegistrationPageState
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.edit, color: Color(0xFF3F51B5)),
+                      Icon(Icons.edit, color: Color(0xFF536DFE)),
                       SizedBox(width: 8),
                       Text(
                         'Tap to Sign',
                         style: TextStyle(
-                          color: Color(0xFF3F51B5),
+                          color: Color(0xFF536DFE),
                           fontWeight: FontWeight.w600,
                         ),
                       ),

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickalert/quickalert.dart'; // Added QuickAlert import
+import 'package:text_pledge/features/parent_permissions/widgets/permission_letter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../controllers/form_submission_notifier.dart';
 import '../models/parent_form_model.dart';
 
@@ -160,7 +162,7 @@ class _ParentPermissionPageState extends ConsumerState<ParentPermissionPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3F51B5),
+        backgroundColor: const Color(0xFF536DFE),
         title: const Text(
           'Parent Permission',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -170,12 +172,18 @@ class _ParentPermissionPageState extends ConsumerState<ParentPermissionPage> {
           onTap: () => Navigator.pop(context),
           child: const Icon(Icons.arrow_back_ios, color: Colors.white),
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Chip(
-              label: Text("Donate", style: TextStyle(color: Colors.white)),
-              backgroundColor: Colors.orange,
+        actions: [
+          InkWell(
+            onTap: () {
+              // https://textpledge.us/donate/
+              launchUrl(Uri.parse("https://textpledge.us/donate/"));
+            },
+            child: Padding(
+              padding: EdgeInsets.only(right: 16),
+              child: Chip(
+                label: Text("Donate", style: TextStyle(color: Colors.white)),
+                backgroundColor: Colors.orange,
+              ),
             ),
           ),
         ],
@@ -187,7 +195,7 @@ class _ParentPermissionPageState extends ConsumerState<ParentPermissionPage> {
           height: 50,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3F51B5),
+              backgroundColor: const Color(0xFF536DFE),
             ),
             onPressed: state.isLoading ? null : _submitForm,
             child:
@@ -250,11 +258,19 @@ class _ParentPermissionPageState extends ConsumerState<ParentPermissionPage> {
                 "Parent Permission and Media Release",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const Text(
-                "Parent Permission and Media Release.pdf",
-                style: TextStyle(
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PermissionLetter()),
+                  );
+                },
+                child: const Text(
+                  "Parent Permission and Media Release.pdf",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),

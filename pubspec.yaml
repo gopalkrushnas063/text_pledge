@@ -20,6 +20,9 @@ dependencies:
   dio: ^5.8.0+1
   url_launcher: ^6.3.1
   quickalert: ^1.1.0
+  syncfusion_flutter_pdfviewer: ^29.2.4
+  easy_pdf_viewer: ^1.0.8
+  pdfrx: ^1.1.29
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +37,9 @@ flutter:
   assets:
     - assets/images/logo.webp
     - assets/images/us_flag.png
+    - assets/icons/
+    - assets/pdf/
+    - assets/pdf/K1/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
