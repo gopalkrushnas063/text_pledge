@@ -1,7 +1,7 @@
 name: text_pledge
 description: "A new Flutter project."
 publish_to: 'none' 
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.7.2
@@ -20,8 +20,6 @@ dependencies:
   dio: ^5.8.0+1
   url_launcher: ^6.3.1
   quickalert: ^1.1.0
-  syncfusion_flutter_pdfviewer: ^29.2.4
-  easy_pdf_viewer: ^1.0.8
   pdfrx: ^1.1.29
 
 dev_dependencies:

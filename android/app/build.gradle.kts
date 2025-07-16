@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.text_pledge"
+    namespace = "com.orangedatacloud.text_pledge"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.text_pledge"
+        applicationId = "com.orangedatacloud.textpledge"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -30,11 +30,20 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("../app/textpledge-keystore.jks") // Path to your keystore
+            storePassword = "752019"     // Keystore password
+            keyAlias = "textpledge"                   // Key alias
+            keyPassword = "752019"           // Key password
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
